@@ -3,11 +3,13 @@ const { Prisma } = require('prisma-binding')
 const Query = require('./resolvers/Query')
 const Mutation = require('./resolvers/Mutation')
 const Subscription = require('./resolvers/Subscription')
+const Feed = require('./resolvers/Feed')
 
 const resolvers = {
   Query,
   Mutation,
   Subscription,
+  Feed,
 }
 
 const server = new GraphQLServer({
@@ -17,7 +19,8 @@ const server = new GraphQLServer({
     ...req,
     db: new Prisma({
       typeDefs: 'src/generated/prisma.graphql',
-      endpoint: 'https://us1.prisma.sh/public-shortneck-872/server/dev', // the endpoint of the Prisma DB service
+      endpoint:
+        'https://us1.prisma.sh/public-shortneck-872/server/dev', // the endpoint of the Prisma DB service
       secret: 'mysecret123', // specified in database/prisma.yml
       debug: true, // log all GraphQL queryies & mutations
     }),
