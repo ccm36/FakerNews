@@ -55,4 +55,4 @@ const POST_MUTATION = gql`
   }
 `
 
-export default graphql(POST_MUTATION, { name: 'postMutation' }) (CreateLink)
+export default graphql(POST_MUTATION, { name: 'postMutation' })(CreateLink)
