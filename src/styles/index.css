@@ -8,12 +8,12 @@ input {
   max-width: 500px;
 }
 
-.gray {
-  color: #828282;
+.yellow {
+  color: #ffb22e;
 }
 
-.orange {
-  background-color: #ff6600;
+.green {
+  background-color: #176d25;
 }
 
 .background-gray {
