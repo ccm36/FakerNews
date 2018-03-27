@@ -20,6 +20,7 @@ class LinkList extends Component {
         {linksToRender.map((link, index) => (
           <Link
             key={link.id}
+            updateStoreAfterVote={this._updateCacheAfterVote}
             index={index}
             link={link}
           />
@@ -27,6 +28,20 @@ class LinkList extends Component {
       </div>
     )
   }
+
+  _updateCacheAfterVote = (store, createVote, linkId) => {
+    // current state of the cached data
+    const data = store.readQuery({ query: FEED_QUERY })
+
+    // retrieve link just voted on by user from cache
+    // assign votes just returned from server as the link's new votes
+    const votedLink = data.feed.links.find(link => link.id === linkId)
+    votedLink.votes = createVote.link.votes
+
+    // write the newly added votes back to the store
+    store.writeQuery({ query: FEED_QUERY, data })
+  }
+
 }
 
 // Query sent to the server, returns data as a prop for the LinkList Component

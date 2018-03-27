@@ -40,6 +40,13 @@ class Link extends Component {
       variables: {
         linkId,
       },
+      // update is a function that is called after server returns a response
+        // receives the mutation payload (data) and the current cache (store)
+        // uses the new data to create a new state for the cache
+          // the server response data is destructured here (vote)
+      update: (store, { data: { vote } }) => {
+        this.props.updateStoreAfterVote(store, vote, linkId)
+      },
     })
   }
 }
