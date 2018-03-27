@@ -88,8 +88,42 @@ class LinkList extends Component {
     })
   }
 
+  _subscribeToNewVotes = () => {
+    this.props.feedQuery.subscribeToMore({
+      document: gql`
+        subscription {
+          newVote {
+            node {
+              id
+              link {
+                id
+                url
+                description
+                createdAt
+                postedBy {
+                  id
+                  name
+                }
+                votes {
+                  id
+                  user {
+                    id
+                  }
+                }
+              }
+              user {
+                id
+              }
+            }
+          }
+        }
+      `,
+    })
+  }
+
   componentDidMount() {
     this._subscribeToNewLinks()
+    this._subscribeToNewVotes()
   }
 }
 
