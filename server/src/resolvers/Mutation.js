@@ -5,6 +5,8 @@ const { getUserId } = require('../utils')
 
 function post(parent, args, context, info) {
   const { url, description } = args
+  // get userId from Authorization header of request
+    // connect token specifying that userId to each posted link
   const userId = getUserId(context)
   return context.db.mutation.createLink({
     data: { url, description, postedBy: { connect: { id: userId } } }
