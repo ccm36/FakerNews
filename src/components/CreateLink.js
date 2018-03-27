@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
+import { FEED_QUERY } from './LinkList'
 
 class CreateLink extends Component {
   state = {
@@ -38,7 +39,18 @@ class CreateLink extends Component {
       variables: {
         description,
         url,
-      }
+      },
+      update: (store, { data: { post } }) => {
+        // read current state of FEED_QUERY results
+        const data = store.readQuery({ query: FEED_QUERY })
+        // insert newest link at index 0
+        data.feed.links.splice(0, 0, post)
+        // write results back to the store
+        store.writeQuery({
+          query: FEED_QUERY,
+          data
+        })
+      },
     })
     this.props.history.push('/')
   }

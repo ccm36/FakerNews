@@ -47,7 +47,7 @@ class LinkList extends Component {
 // Query sent to the server, returns data as a prop for the LinkList Component
   // because of the optionally passed second argument in graphql (i.e. name)
   // you will reference 'feedQuery' as the prop name (otherwise defaults to 'data')th
-const FEED_QUERY = gql`
+export const FEED_QUERY = gql`
   query FeedQuery {
     feed {
       links {
