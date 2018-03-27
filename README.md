@@ -2,7 +2,7 @@
 
 A message board for all your 'fake news' desires
 
-This is built with a React frontend utilizing the Apollo Client for querying the GraphQL (with Prima) backend
+This is built with a React frontend with Apollo for querying the GraphQL (Prisma) backend
 
 ## Available Scripts
 
