@@ -42,6 +42,55 @@ class LinkList extends Component {
     store.writeQuery({ query: FEED_QUERY, data })
   }
 
+  // can access 'feedQuery' on props because its wrapped in graphql container below
+  // which calls 'subscribeToMore' opening a websocket connection to the subscription server
+    // document: represents the subscription we want (i.e. fires when newLink is created)
+    // updateQuery: determines how store should be updated with new server data
+      // similar to a Redux Reducer
+        // takes prev state and new data, merges, and returns new state
+  _subscribeToNewLinks = () => {
+    this.props.feedQuery.subscribeToMore({
+      document: gql`
+        subscription {
+          newLink {
+            node {
+              id
+              url
+              description
+              createdAt
+              postedBy {
+                id
+                name
+              }
+              votes {
+                id
+                user {
+                  id
+                }
+              }
+            }
+          }
+        }
+      `,
+      updateQuery: (previous, { subscriptionData }) => {
+        const newAllLinks = [
+          subscriptionData.data.newLink.node,
+          ...previous.feed.links
+        ]
+        const result = {
+          ...previous,
+          feed: {
+            links: newAllLinks,
+          },
+        }
+        return result
+      },
+    })
+  }
+
+  componentDidMount() {
+    this._subscribeToNewLinks()
+  }
 }
 
 // Query sent to the server, returns data as a prop for the LinkList Component
@@ -69,4 +118,4 @@ export const FEED_QUERY = gql`
     }
   }
 `
-export default graphql(FEED_QUERY, { name: 'feedQuery' }) (LinkList)
+export default graphql(FEED_QUERY, { name: 'feedQuery' })(LinkList)

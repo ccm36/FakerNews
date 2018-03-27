@@ -30,8 +30,33 @@ const middlewareAuthLink = new ApolloLink((operation, forward) => {
 
 const httpLinkWithAuthToken = middlewareAuthLink.concat(httpLink)
 
+// create a websocket connection for the subscriptions
+const wsLink = new WebSocketLink({
+  uri: `ws://localhost:4000`,
+  options: {
+    reconnect: true,
+    connectionParams: {
+      authToken: localStorage.getItem(AUTH_TOKEN),
+    }
+  }
+})
+
+// 'split' properly routes the requests (to middleware) and updates client
+// takes 3 arguments:
+  // test function (i.e. is requested operation a 'subscription'), returns a boolean
+  // if true (i.e. type subscription), passed to wsLink
+  // if false (i.e. type query or mutation), passed to httpLinkWithAuthToken 
+const link = split(
+  ({ query }) => {
+    const { kind, operation } = getMainDefinition(query)
+    return kind === 'OperationDefinition' && operation === 'subscription'
+  },
+  wsLink,
+  httpLinkWithAuthToken,
+)
+
 const client = new ApolloClient({
-  link: httpLinkWithAuthToken,
+  link,
   cache: new InMemoryCache()
 })
 
