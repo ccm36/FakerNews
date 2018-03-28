@@ -19,7 +19,9 @@ class Link extends Component {
         </div>
         <div className="ml1">
           <div>
-            {this.props.link.description} ({this.props.link.url})
+            <a className="no-underline black" href={this.props.link.url}>
+              {this.props.link.description} ({this.props.link.url})
+            </a>
           </div>
           <div className="f6 lh-copy yellow">
             {this.props.link.votes.length} votes | by{' '}
