@@ -9,7 +9,9 @@ class Header extends Component {
     return (
       <div className="flex pa1 justify-between nowrap green">
         <div className="flex flex-fixed yellow">
-          <div className="fw7 mr1">Faker News</div>
+          <Link to="/" className="fw7 mr1 no-underline yellow">
+            Faker News
+          </Link>
           <Link to="/" className="ml1 no-underline yellow">
             new
           </Link>
