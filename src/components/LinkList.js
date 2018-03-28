@@ -5,6 +5,11 @@ import Link from './Link'
 import { LINKS_PER_PAGE } from '../constants'
 
 class LinkList extends Component {
+  componentDidMount() {
+    this._subscribeToNewLinks()
+    this._subscribeToNewVotes()
+  }
+
   render() {
     if (this.props.feedQuery && this.props.feedQuery.loading) {
       return <div>Loading...</div>
@@ -25,7 +30,7 @@ class LinkList extends Component {
             <Link
               key={link.id}
               updateStoreAfterVote={this._updateCacheAfterVote}
-              index={index}
+              index={page ? (page - 1) * LINKS_PER_PAGE + index : index}
               link={link}
             />
           ))}
@@ -40,7 +45,7 @@ class LinkList extends Component {
     )
   }
 
-  _getLinksToRender = (isNewPage) => {
+  _getLinksToRender = isNewPage => {
     if (isNewPage) {
       return this.props.feedQuery.feed.links
     }
@@ -66,8 +71,8 @@ class LinkList extends Component {
   }
 
   _updateCacheAfterVote = (store, createVote, linkId) => {
-    const page = parseInt(this.props.match.params.page, 10)
     const isNewPage = this.props.location.pathname.includes('new')
+    const page = parseInt(this.props.match.params.page, 10)
     const skip = isNewPage ? (page - 1) * LINKS_PER_PAGE : 0
     const first = isNewPage ? LINKS_PER_PAGE : 100
     const orderBy = isNewPage ? 'createdAt_DESC' : null
@@ -164,10 +169,6 @@ class LinkList extends Component {
     })
   }
 
-  componentDidMount() {
-    this._subscribeToNewLinks()
-    this._subscribeToNewVotes()
-  }
 }
 
 // Query sent to the server, returns data as a prop for the LinkList Component
@@ -193,7 +194,6 @@ export const FEED_QUERY = gql`
           }
         }
       }
-      count
     }
   }
 `

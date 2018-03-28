@@ -72,6 +72,4 @@ const VOTE_MUTATION = gql`
   }
 `
 
-export default graphql(VOTE_MUTATION, {
-  name: 'voteMutation',
-})(Link)
+export default graphql(VOTE_MUTATION, { name: 'voteMutation' })(Link)
