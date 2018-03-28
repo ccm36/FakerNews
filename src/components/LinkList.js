@@ -66,8 +66,15 @@ class LinkList extends Component {
   }
 
   _updateCacheAfterVote = (store, createVote, linkId) => {
-    // current state of the cached data
-    const data = store.readQuery({ query: FEED_QUERY })
+    const page = parseInt(this.props.match.params.page, 10)
+    const isNewPage = this.props.location.pathname.includes('new')
+    const skip = isNewPage ? (page - 1) * LINKS_PER_PAGE : 0
+    const first = isNewPage ? LINKS_PER_PAGE : 100
+    const orderBy = isNewPage ? 'createdAt_DESC' : null
+    const data = store.readQuery({
+      query: FEED_QUERY,
+      variables: { first, skip, orderBy }
+    })
 
     // retrieve link just voted on by user from cache
     // assign votes just returned from server as the link's new votes
