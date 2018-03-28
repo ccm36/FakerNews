@@ -12,7 +12,7 @@ class Link extends Component {
         <div className="flex items-center">
           <span className="yellow">{this.props.index + 1}.</span>
           {authToken && (
-            <div className="ml1 yellow f11" onClick={() => this._voteForLink()}>
+            <div className="pointer ml1 yellow f11" onClick={() => this._voteForLink()}>
               ▲
             </div>
           )}

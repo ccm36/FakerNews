@@ -14,20 +14,55 @@ class LinkList extends Component {
       return <div>Error</div>
     }
 
-    const linksToRender = this.props.feedQuery.feed.links
+    const isNewPage = this.props.location.pathname.includes('new')
+    const linksToRender = this._getLinksToRender(isNewPage)
+    const page = parseInt(this.props.match.params.page, 10)
 
     return (
       <div>
-        {linksToRender.map((link, index) => (
-          <Link
-            key={link.id}
-            updateStoreAfterVote={this._updateCacheAfterVote}
-            index={index}
-            link={link}
-          />
-        ))}
+        <div>
+          {linksToRender.map((link, index) => (
+            <Link
+              key={link.id}
+              updateStoreAfterVote={this._updateCacheAfterVote}
+              index={index}
+              link={link}
+            />
+          ))}
+        </div>
+        {isNewPage && (
+          <div className="flex ml4 mv3 yellow">
+            <div className="pointer mr2" onClick={() => this._previousPage()}>Previous</div>
+            <div className="pointer" onClick={() => this._nextPage()}>Next</div>
+          </div>
+        )}
       </div>
     )
+  }
+
+  _getLinksToRender = (isNewPage) => {
+    if (isNewPage) {
+      return this.props.feedQuery.feed.links
+    }
+    const rankedLinks = this.props.feedQuery.feed.links.slice()
+    rankedLinks.sort((link1, link2) => link2.votes.length - link1.votes.length)
+    return rankedLinks
+  }
+
+  _nextPage = () => {
+    const page = parseInt(this.props.match.params.page, 10)
+    if (page <= this.props.feedQuery.feed.count / LINKS_PER_PAGE) {
+      const nextPage = page + 1
+      this.props.history.push(`/new/${nextPage}`)
+    }
+  }
+
+  _previousPage = () => {
+    const page = parseInt(this.props.match.params.page, 10)
+    if (page > 1) {
+      const previousPage = page - 1
+      this.props.history.push(`/new/${previousPage}`)
+    }
   }
 
   _updateCacheAfterVote = (store, createVote, linkId) => {
@@ -130,7 +165,7 @@ class LinkList extends Component {
 
 // Query sent to the server, returns data as a prop for the LinkList Component
   // because of the optionally passed second argument in graphql (i.e. name)
-  // you will reference 'feedQuery' as the prop name (otherwise defaults to 'data')th
+  // you will reference 'feedQuery' as the prop name (otherwise defaults to 'data')
 export const FEED_QUERY = gql`
   query FeedQuery($first: Int, $skip: Int, $orderBy: LinkOrderByInput) {
     feed(first: $first, skip: $skip, orderBy: $orderBy) {
