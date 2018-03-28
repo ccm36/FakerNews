@@ -73,7 +73,7 @@ class LinkList extends Component {
     const orderBy = isNewPage ? 'createdAt_DESC' : null
     const data = store.readQuery({
       query: FEED_QUERY,
-      variables: { first, skip, orderBy }
+      variables: { first, skip, orderBy },
     })
 
     // retrieve link just voted on by user from cache

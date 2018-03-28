@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
 import { FEED_QUERY } from './LinkList'
+import { LINKS_PER_PAGE } from '../constants'
 
 class CreateLink extends Component {
   state = {
@@ -41,18 +42,26 @@ class CreateLink extends Component {
         url,
       },
       update: (store, { data: { post } }) => {
-        // read current state of FEED_QUERY results
-        const data = store.readQuery({ query: FEED_QUERY })
-        // insert newest link at index 0
+        const first = LINKS_PER_PAGE
+        const skip = 0
+        const orderBy = 'createdAt_DESC'
+        const data = store.readQuery({
+          query: FEED_QUERY,
+          variables: { first, skip, orderBy },
+        })
+        // insert newest link at index 0 and remove last
         data.feed.links.splice(0, 0, post)
+        data.feed.links.pop()
+
         // write results back to the store
         store.writeQuery({
           query: FEED_QUERY,
-          data
+          data,
+          variables: { first, skip, orderBy },
         })
       },
     })
-    this.props.history.push('/')
+    this.props.history.push('/new/1')
   }
 }
 
